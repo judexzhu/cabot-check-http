@@ -3,7 +3,7 @@
 from setuptools import setup, find_packages
 
 setup(name='cabot-check-http',
-      version='0.0.1',
+      version='0.0.2',
       description='A http check plugin for Cabot by Arachnys',
       author='Arachnys',
       author_email='info@arachnys.org',
