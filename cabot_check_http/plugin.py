@@ -64,7 +64,13 @@ class HttpStatusCheckForm(forms.Form):
         help_text='Set to false to allow not try to verify ssl certificates (default True)',
         required=False,
     )
-
+    host = forms.CharField(
+        help_text='Host Header.',
+        required=False,
+        widget = forms.TextInput(attrs={
+            'style': 'width: 30%',
+            }),
+    )
 
 class HttpStatusCheckPlugin(StatusCheckPlugin):
     name = "HTTP Status"
@@ -72,7 +78,13 @@ class HttpStatusCheckPlugin(StatusCheckPlugin):
     author = "Jonathan Balls"
     version = "0.0.1"
     font_icon = "glyphicon glyphicon-arrow-up"
-
+    headers={
+		    "User-Agent": settings.HTTP_USER_AGENT,
+		}
+	
+    if check.host:
+	headers['"Host"'] = check.host
+    
     config_form = HttpStatusCheckForm
 
     plugin_variables = [
@@ -91,9 +103,7 @@ class HttpStatusCheckPlugin(StatusCheckPlugin):
 		timeout=check.timeout,
 		verify=check.verify_ssl_certificate,
 		auth=auth,
-		headers={
-		    "User-Agent": settings.HTTP_USER_AGENT,
-		})
+		headers=headers)
         except requests.RequestException as e:
             result.error = u'Request error occurred: %s' % (e.message,)
             result.succeeded = False
